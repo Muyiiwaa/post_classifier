@@ -1,8 +1,13 @@
 import torch
 from typing import Tuple
+from sklearn.preprocessing import LabelEncoder
+import joblib
+
+
 
 def classifier_function(text: str, tokenizer, model, device) -> Tuple:
     # Tokenize the text
+    encoder = joblib.load('encoder.pkl')
     encoding = tokenizer.encode_plus(
         text,
         add_special_tokens=True,
@@ -30,7 +35,8 @@ def classifier_function(text: str, tokenizer, model, device) -> Tuple:
 
     # Get the predicted class (0 for not spam, 1 for spam)
     prob, prediction = torch.max(probs, 1)
-    probs = prob.item()
+    probs, prediction = prob.item(), encoder.inverse_transform([prediction.item()])
+
 
     # Return the prediction
-    return probs, prediction
+    return round(probs, 4), prediction[0]

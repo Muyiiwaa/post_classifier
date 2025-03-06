@@ -2,8 +2,7 @@ from pydantic import BaseModel,Field
 from fastapi import FastAPI
 from typing import List,Literal
 import torch
-from transformers import AutoTokenizer, AutoModelForSequenceClassification, AdamW
-import numpy
+from transformers import AutoTokenizer, AutoModelForSequenceClassification
 from utils import classifier_function
 
 # Detect the available device
@@ -30,3 +29,7 @@ async def classifier(post: UserInput):
     probability,prediction = classifier_function(text=text,tokenizer=tokenizer,model=model, device = device)
     return {"output": [probability, prediction]}
     
+
+if __name__ == "__main__":
+    text = "Lebron James is such an exceptional player. He has played incredibly well in the last couple of days"
+    print(classifier_function(text,tokenizer,model,device))
